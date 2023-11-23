@@ -72,6 +72,9 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("daisyui")],
+  daisyui: {
+    prefix: "dui-", // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
+  },
 };
 export default config;
