@@ -3,17 +3,39 @@
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import { marvelURL } from "@/app/api/marvel/marvel";
-import { IMarvelCharacter } from "@/types/characters";
+import {
+  apiUrl,
+  apiKeyParam,
+  tsParam,
+  hashParam,
+} from "@/app/api/marvel/getCharsParams";
+import { ICharactersInfo } from "@/types/characters";
 
 interface IMarvelResponse {
   code: number;
   status: string;
+  copyright: string;
+  attributionText: string;
+  attributionHTML: string;
   data: {
+    offset: number;
+    limit: number;
     total: number;
-    results: IMarvelCharacter[];
+    count: number;
+    results: ICharactersInfo[];
   };
+  etag: "string";
 }
+
+const fetchData = async () => {
+  const res = await axios.get<IMarvelResponse>(
+    `${apiUrl}?${apiKeyParam}&${tsParam}&${hashParam}`
+  );
+  if (res.status !== 200) {
+    throw new Error("Error fetching Marvel characters");
+  }
+  return res.data;
+};
 
 const useCharacters = () => {
   const {
@@ -22,18 +44,7 @@ const useCharacters = () => {
     isError,
   } = useQuery<IMarvelResponse, Error>({
     queryKey: ["characters"],
-    queryFn: async () => {
-      try {
-        const res = await axios.get<IMarvelResponse>(marvelURL);
-        if (res.status !== 200) {
-          throw new Error("Error fetching Marvel characters");
-        }
-        const data = res.data;
-        return data;
-      } catch (error: any) {
-        throw error.message;
-      }
-    },
+    queryFn: fetchData,
   });
   return { marvelChars, isLoading, isError };
 };

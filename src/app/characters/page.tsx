@@ -1,16 +1,12 @@
 import dynamic from "next/dynamic";
 
 const CharactesrPage = () => {
-  const CharacterCard = dynamic(
-    () => import("@/components/character-card/CharacterCard"),
+  const CharactersCard = dynamic(
+    () => import("@/components/character-card/CharactersCard"),
     {
       ssr: false,
     }
   );
-  return (
-    <div>
-      <CharacterCard />
-    </div>
-  );
+  return <CharactersCard />;
 };
 export default CharactesrPage;

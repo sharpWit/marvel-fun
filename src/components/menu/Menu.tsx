@@ -19,12 +19,32 @@ const Menu = () => {
           <NavigationMenuContent className="flex flex-col gap-2 min-w-max p-2">
             <Link href="/characters" legacyBehavior passHref>
               <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
-                All Characters
+                Characters
               </NavigationMenuLink>
             </Link>
             <Link href="/comics" legacyBehavior passHref>
               <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
-                All Comics
+                Comics
+              </NavigationMenuLink>
+            </Link>
+            <Link href="/creators" legacyBehavior passHref>
+              <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
+                Creators
+              </NavigationMenuLink>
+            </Link>
+            <Link href="/events" legacyBehavior passHref>
+              <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
+                Events
+              </NavigationMenuLink>
+            </Link>
+            <Link href="/series" legacyBehavior passHref>
+              <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
+                Series
+              </NavigationMenuLink>
+            </Link>
+            <Link href="/stories" legacyBehavior passHref>
+              <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
+                Stories
               </NavigationMenuLink>
             </Link>
           </NavigationMenuContent>
