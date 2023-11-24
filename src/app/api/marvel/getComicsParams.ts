@@ -1,25 +1,16 @@
-const getComicsParams = () => {
-  const ts = new Date().getTime();
+import { IMarvelResponse } from "@/types/response";
+import axios from "axios";
+import { apiKeyParam, hashParam, tsParam } from "./urlParams";
+import { IComicsInfo } from "@/types/comics";
 
-  const privateKey = process.env.NEXT_PUBLIC_MARVEL_PRIVATE_KEY || "";
+const apiUrl = "https://gateway.marvel.com/v1/public/comics";
 
-  const publicKey = process.env.NEXT_PUBLIC_MARVEL_PUBLIC_KEY || "";
-
-  const hash = require("crypto")
-    .createHash("md5")
-    .update(ts + privateKey + publicKey)
-    .digest("hex");
-
-  const apiUrl = "https://gateway.marvel.com/v1/public/comics";
-
-  const apiKeyParam = `apikey=${process.env.NEXT_PUBLIC_MARVEL_PUBLIC_KEY}`;
-
-  const tsParam = `ts=${ts}`;
-
-  const hashParam = `hash=${hash}`;
-
-  return { apiUrl, apiKeyParam, tsParam, hashParam };
+export const fetchComicsData = async () => {
+  const res = await axios.get<IMarvelResponse<IComicsInfo>>(
+    `${apiUrl}?${apiKeyParam}&${tsParam}&${hashParam}`
+  );
+  if (res.status !== 200) {
+    throw new Error("Error fetching Marvel characters");
+  }
+  return res.data;
 };
-
-// Usage
-export const { apiUrl, apiKeyParam, tsParam, hashParam } = getComicsParams();

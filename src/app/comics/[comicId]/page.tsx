@@ -14,22 +14,22 @@ import {
 import { AspectRatio } from "@/components/ui/AspectRatio";
 import { Badge } from "@/components/ui/Badge";
 import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
+import { IComicsInfo } from "@/types/comics";
 import { IMarvelResponse } from "@/types/response";
-import { ICharactersInfo } from "@/types/characters";
 
 interface Props {
-  params: { characterId: number };
+  params: { comicId: number };
 }
 
-const apiUrl = "https://gateway.marvel.com/v1/public/characters";
+const apiUrl = "https://gateway.marvel.com/v1/public/comics";
 
-const getData = async (characterId: number) => {
+const getData = async (comicId: number) => {
   try {
-    const res = await axios.get<IMarvelResponse<ICharactersInfo>>(
-      `${apiUrl}/${characterId}?${apiKeyParam}&${tsParam}&${hashParam}`
+    const res = await axios.get<IMarvelResponse<IComicsInfo>>(
+      `${apiUrl}/${comicId}?${apiKeyParam}&${tsParam}&${hashParam}`
     );
     if (res.status !== 200) {
-      throw new Error("Error fetching Marvel character!");
+      throw new Error("Error fetching Marvel comic!");
     }
     return res.data;
   } catch (error) {
@@ -38,18 +38,20 @@ const getData = async (characterId: number) => {
   }
 };
 
-const CharacterPage: NextPage<Props> = async ({ params }) => {
-  const characterObj = await getData(params.characterId);
-  const character = characterObj.data.results;
-
-  return character.length
-    ? character.map((char) => (
-        <Card key={char.id} className="flex flex-col md:flex-wrap md:flex-row">
+const ComicPage: NextPage<Props> = async ({ params }) => {
+  const comicObj = await getData(params.comicId);
+  const comic = comicObj.data.results;
+  return comic.length
+    ? comic.map((comicItem) => (
+        <Card
+          key={comicItem.id}
+          className="flex flex-col md:flex-wrap md:flex-row"
+        >
           <CardHeader className="flex-1 ">
-            <CardTitle>{char.name}</CardTitle>
-            <CardDescription>{char.description}</CardDescription>
+            <CardTitle>{comicItem.title}</CardTitle>
+            <CardDescription>{comicItem.description}</CardDescription>
             <CardFooter className="!mt-auto">
-              {char.urls.map((url) => (
+              {comicItem.urls.map((url) => (
                 <ul key={url.url} className="p-1">
                   <Link href={url.url}>
                     <Badge>{url.type}</Badge>
@@ -61,8 +63,8 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
           <CardContent className="flex-1 w-full p-2">
             <AspectRatio ratio={1 / 1}>
               <Image
-                src={`${char.thumbnail.path}.${char.thumbnail.extension}`}
-                alt={char.name}
+                src={`${comicItem.thumbnail.path}.${comicItem.thumbnail.extension}`}
+                alt={comicItem.title}
                 fill
                 className="rounded-md object-contain"
               />
@@ -70,8 +72,8 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
           </CardContent>
           <CardContent className="basis-full p-2">
             <div className="my-3">
-              <h3 className="font-semibold m-2">Comics:</h3>
-              {char.comics.items.map((item) => (
+              <h3 className="font-semibold m-2">Creators:</h3>
+              {comicItem.creators.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
                   <Link href={item.resourceURI}>{item.name}</Link>
                 </CardFooter>
@@ -79,15 +81,15 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
             </div>
             <div className="my-3">
               <h3 className="font-semibold m-2">Series:</h3>
-              {char.series.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
-                </CardFooter>
-              ))}
+              <CardFooter>
+                <Link href={comicItem.series.resourceURI}>
+                  {comicItem.series.name}
+                </Link>
+              </CardFooter>
             </div>
             <div className="my-3">
               <h3 className="font-semibold m-2">Events:</h3>
-              {char.events.items.map((item) => (
+              {comicItem.events.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
                   <Link href={item.resourceURI}>{item.name}</Link>
                 </CardFooter>
@@ -95,7 +97,7 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
             </div>
             <div className="my-3">
               <h3 className="font-semibold m-2">Stories:</h3>
-              {char.stories.items.map((item) => (
+              {comicItem.stories.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
                   <Link href={item.resourceURI}>{item.name}</Link>
                 </CardFooter>
@@ -104,6 +106,6 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
           </CardContent>
         </Card>
       ))
-    : "There is no character";
+    : "There is no comic";
 };
-export default CharacterPage;
+export default ComicPage;
