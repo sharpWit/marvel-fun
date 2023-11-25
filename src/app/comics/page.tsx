@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-const page = () => {
+const ComicsPage = () => {
   const ComicsCard = dynamic(
     () => import("@/components/comic-card/ComicsCard"),
     {
@@ -9,4 +9,4 @@ const page = () => {
   );
   return <ComicsCard />;
 };
-export default page;
+export default ComicsPage;
