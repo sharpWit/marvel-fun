@@ -3,17 +3,33 @@
 import { fetchCharsData } from "@/app/api/marvel/getCharsParams";
 import { ICharactersInfo } from "@/types/characters";
 import { IMarvelResponse } from "@/types/response";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useState } from "react";
 
 const useCharacters = () => {
+  const [page, setPage] = useState(0);
+
   const {
     data: marvelChars,
-    isLoading,
     isError,
+    error,
+    isPending,
+    isFetching,
+    isPlaceholderData,
   } = useQuery<IMarvelResponse<ICharactersInfo>, Error>({
-    queryKey: ["characters"],
-    queryFn: fetchCharsData,
+    queryKey: ["characters", page],
+    queryFn: () => fetchCharsData(page),
+    placeholderData: keepPreviousData,
   });
-  return { marvelChars, isLoading, isError };
+  return {
+    marvelChars,
+    isError,
+    error,
+    isPending,
+    isFetching,
+    isPlaceholderData,
+    page,
+    setPage,
+  };
 };
 export default useCharacters;

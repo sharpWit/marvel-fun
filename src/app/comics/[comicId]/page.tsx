@@ -66,6 +66,8 @@ const ComicPage: NextPage<Props> = async ({ params }) => {
                 src={`${comicItem.thumbnail.path}.${comicItem.thumbnail.extension}`}
                 alt={comicItem.title}
                 fill
+                priority
+                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
                 className="rounded-md object-contain"
               />
             </AspectRatio>

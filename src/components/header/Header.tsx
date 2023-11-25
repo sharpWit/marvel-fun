@@ -20,8 +20,10 @@ const Header = () => {
             <AspectRatio ratio={1 / 1}>
               <Image
                 src="/logo.png"
-                fill
                 alt="Logo"
+                fill
+                priority
+                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
                 className="rounded-md object-contain"
               />
             </AspectRatio>
@@ -36,8 +38,10 @@ const Header = () => {
             <AspectRatio ratio={1 / 1}>
               <Image
                 src="/logo.png"
-                fill
                 alt="Logo"
+                fill
+                priority
+                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
                 className="rounded-md object-contain drop-shadow-md"
               />
             </AspectRatio>

@@ -14,19 +14,31 @@ import {
 import useComics from "@/hooks/useComics";
 import { AspectRatio } from "../ui/AspectRatio";
 import { Button } from "../ui/buttons/Button";
+import Pagination from "../ui/pagination/Pagination";
 
 const ComicsCard = () => {
-  const { marvelComics, isLoading, isError } = useComics();
+  const {
+    marvelComics,
+    isError,
+    error,
+    isPending,
+    isFetching,
+    isPlaceholderData,
+    page,
+    setPage,
+  } = useComics();
 
-  if (isLoading) {
+  const marvelComicsObjs = marvelComics?.data.results;
+
+  if (isPending) {
     return <Loading />;
   }
   if (isError) {
-    return <p>Error: {isError || "An error occurred"}</p>;
+    return <p>Error: {error?.message}</p>;
   }
-
-  //   Extract the first 10 characters
-  const firstTenComics = marvelComics?.data.results.slice(0, 20) || [];
+  if (isFetching) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -34,7 +46,7 @@ const ComicsCard = () => {
         Marvel Comics
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {firstTenComics.map((comic) => (
+        {marvelComicsObjs?.map((comic) => (
           <Card key={comic.id} className="flex flex-col md:flex-row">
             <CardContent className="flex-1 p-4 w-full">
               <AspectRatio ratio={1 / 1}>
@@ -42,6 +54,8 @@ const ComicsCard = () => {
                   src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
                   alt={comic.title}
                   fill
+                  priority
+                  sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
                   className="rounded-md object-fill drop-shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out border border-yellow-500"
                 />
               </AspectRatio>
@@ -58,6 +72,12 @@ const ComicsCard = () => {
           </Card>
         ))}
       </div>
+      <Pagination
+        page={page}
+        setPage={setPage}
+        isPlaceholderData={isPlaceholderData}
+        data={marvelComics?.data}
+      />
     </>
   );
 };

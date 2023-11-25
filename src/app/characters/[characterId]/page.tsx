@@ -64,7 +64,9 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
                 src={`${char.thumbnail.path}.${char.thumbnail.extension}`}
                 alt={char.name}
                 fill
+                priority
                 className="rounded-md object-contain"
+                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
               />
             </AspectRatio>
           </CardContent>

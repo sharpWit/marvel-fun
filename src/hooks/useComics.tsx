@@ -3,17 +3,33 @@
 import { fetchComicsData } from "@/app/api/marvel/getComicsParams";
 import { IComicsInfo } from "@/types/comics";
 import { IMarvelResponse } from "@/types/response";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 const useComics = () => {
+  const [page, setPage] = useState(0);
+
   const {
     data: marvelComics,
-    isLoading,
     isError,
+    error,
+    isPending,
+    isFetching,
+    isPlaceholderData,
   } = useQuery<IMarvelResponse<IComicsInfo>, Error>({
-    queryKey: ["comics"],
-    queryFn: fetchComicsData,
+    queryKey: ["comics", page],
+    queryFn: () => fetchComicsData(page),
+    placeholderData: keepPreviousData,
   });
-  return { marvelComics, isLoading, isError };
+  return {
+    marvelComics,
+    isError,
+    error,
+    isPending,
+    isFetching,
+    isPlaceholderData,
+    page,
+    setPage,
+  };
 };
 export default useComics;
