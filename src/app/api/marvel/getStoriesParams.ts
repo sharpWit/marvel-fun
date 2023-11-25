@@ -1,25 +1,27 @@
-const getStoriesParams = () => {
-  const ts = new Date().getTime();
+import axios from "axios";
+import { IMarvelResponse } from "@/types/response";
+import { apiKeyParam, hashParam, tsParam } from "./urlParams";
+import { ISeriesInfo } from "@/types/series";
 
-  const privateKey = process.env.NEXT_PUBLIC_MARVEL_PRIVATE_KEY || "";
+const PAGE_SIZE = 20;
+const apiUrl = "https://gateway.marvel.com/v1/public/stories";
 
-  const publicKey = process.env.NEXT_PUBLIC_MARVEL_PUBLIC_KEY || "";
+export const fetchStoriesData = async (page = 0) => {
+  const offset = page * PAGE_SIZE; // Calculate the offset based on the page number and page size
+  const limit = PAGE_SIZE; // Set the number of items per page
 
-  const hash = require("crypto")
-    .createHash("md5")
-    .update(ts + privateKey + publicKey)
-    .digest("hex");
+  const url = `${apiUrl}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${limit}`;
 
-  const apiUrl = "https://gateway.marvel.com/v1/public/stories";
+  try {
+    const res = await axios.get<IMarvelResponse<ISeriesInfo>>(url);
 
-  const apiKeyParam = `apikey=${process.env.NEXT_PUBLIC_MARVEL_PUBLIC_KEY}`;
+    if (res.status !== 200) {
+      throw new Error("Error fetching Marvel stories");
+    }
 
-  const tsParam = `ts=${ts}`;
-
-  const hashParam = `hash=${hash}`;
-
-  return { apiUrl, apiKeyParam, tsParam, hashParam };
+    return res.data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
 };
-
-// Usage
-export const { apiUrl, apiKeyParam, tsParam, hashParam } = getStoriesParams();
