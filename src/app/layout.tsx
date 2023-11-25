@@ -30,7 +30,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header />
-            <main className="container pt-2 lg:pt-28 min-h-screen">
+            <main className="container pt-4 lg:pt-32 min-h-screen">
               {children}
             </main>
             <Footer />
