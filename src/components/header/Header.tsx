@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Menu from "../menu/Menu";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import Logo from "./Logo";
 
 const Header = () => {
   return (
@@ -15,19 +16,7 @@ const Header = () => {
             <ModeToggle />
             <Menu />
           </div>
-
-          <Link href="/" className="w-20">
-            <AspectRatio ratio={1 / 1}>
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                fill
-                priority
-                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
-                className="rounded-md object-contain"
-              />
-            </AspectRatio>
-          </Link>
+          <Logo />
         </div>
       </header>
       <header className="flex flex-col lg:hidden px-2 gap-1">
@@ -37,12 +26,12 @@ const Header = () => {
           <Link href="/" className="w-20">
             <AspectRatio ratio={1 / 1}>
               <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt="Logo"
                 fill
                 priority
                 sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
-                className="rounded-md object-contain drop-shadow-md"
+                className="mt-2 mr-2 rounded-md object-contain drop-shadow-md bg-black"
               />
             </AspectRatio>
           </Link>
