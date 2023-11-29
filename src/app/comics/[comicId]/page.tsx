@@ -47,10 +47,10 @@ const ComicPage: NextPage<Props> = async ({ params }) => {
           key={comicItem.id}
           className="flex flex-col md:flex-wrap md:flex-row"
         >
-          <CardHeader className="flex-1 ">
+          <CardHeader className="flex-1">
             <CardTitle>{comicItem.title}</CardTitle>
             <CardDescription>{comicItem.description}</CardDescription>
-            <CardFooter className="!mt-auto">
+            <CardFooter className="!mt-auto flex-wrap">
               {comicItem.urls.map((url) => (
                 <ul key={url.url} className="p-1">
                   <Link href={url.url}>

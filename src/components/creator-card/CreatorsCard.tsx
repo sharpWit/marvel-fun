@@ -37,7 +37,7 @@ const CreatorsCard = () => {
   return (
     <>
       <h2 className="m-2 p-2 text-yellow-300 drop-shadow-lg text-xl md:text-2xl font-bold">
-        Marvel creators
+        Marvel Creators
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {marvelCreatorsObjs?.map((creator) => (
