@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/Badge";
 import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
 import { IComicsInfo } from "@/types/comics";
 import { IMarvelResponse } from "@/types/response";
+import { modifyUrl } from "@/lib/utils";
 
 interface Props {
   params: { comicId: number };
@@ -77,14 +78,14 @@ const ComicPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Creators:</h3>
               {comicItem.creators.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>
             <div className="my-3">
               <h3 className="font-semibold m-2">Series:</h3>
               <CardFooter>
-                <Link href={comicItem.series.resourceURI}>
+                <Link href={modifyUrl(comicItem.series.resourceURI)}>
                   {comicItem.series.name}
                 </Link>
               </CardFooter>
@@ -93,7 +94,7 @@ const ComicPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Events:</h3>
               {comicItem.events.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>
@@ -101,7 +102,7 @@ const ComicPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Stories:</h3>
               {comicItem.stories.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>

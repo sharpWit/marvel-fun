@@ -1,7 +1,7 @@
 import axios from "axios";
+import Link from "next/link";
 import Image from "next/image";
 import { NextPage } from "next";
-import Link from "next/link";
 
 import {
   Card,
@@ -11,11 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/cards/Card";
-import { AspectRatio } from "@/components/ui/AspectRatio";
 import { Badge } from "@/components/ui/Badge";
+import { AspectRatio } from "@/components/ui/AspectRatio";
 import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
 import { IMarvelResponse } from "@/types/response";
 import { ICharactersInfo } from "@/types/characters";
+import { modifyUrl } from "@/lib/utils";
 
 interface Props {
   params: { characterId: number };
@@ -75,7 +76,7 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Comics:</h3>
               {char.comics.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>
@@ -83,7 +84,7 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Series:</h3>
               {char.series.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>
@@ -91,7 +92,7 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Events:</h3>
               {char.events.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>
@@ -99,7 +100,7 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Stories:</h3>
               {char.stories.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>

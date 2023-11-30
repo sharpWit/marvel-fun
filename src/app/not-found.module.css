@@ -1,0 +1,33 @@
+.section {
+  padding: 4rem 2rem;
+}
+
+.section .error {
+  font-size: 150px;
+  color: rgb(202, 138, 4); /* Updated color code */
+  text-shadow: 1px 1px 1px #00593e, 2px 2px 1px #00593e, 3px 3px 1px #00593e,
+    4px 4px 1px #00593e, 5px 5px 1px #00593e, 6px 6px 1px #00593e,
+    7px 7px 1px #00593e, 8px 8px 1px #00593e, 25px 25px 8px rgba(0, 0, 0, 0.2);
+}
+
+.page {
+  margin: 2rem 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.backHome {
+  display: inline-block;
+  border: 2px solid #222;
+  color: #222;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 0.75rem 1rem 0.6rem;
+  transition: all 0.2s linear;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+.backHome:hover {
+  background: #222;
+  color: #ddd;
+}

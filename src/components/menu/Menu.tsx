@@ -47,6 +47,11 @@ const Menu = () => {
                 Stories
               </NavigationMenuLink>
             </Link>
+            <Link href="/about" legacyBehavior passHref>
+              <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
+                About me
+              </NavigationMenuLink>
+            </Link>
           </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>

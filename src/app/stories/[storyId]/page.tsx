@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/Badge";
 import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
 import { IMarvelResponse } from "@/types/response";
 import { IStoriesInfo } from "@/types/stories";
+import { modifyUrl } from "@/lib/utils";
 
 interface Props {
   params: { storyId: number };
@@ -77,7 +78,7 @@ const StoryPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Creators:</h3>
               {storyItem.creators.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>
@@ -87,7 +88,9 @@ const StoryPage: NextPage<Props> = async ({ params }) => {
                 <Link href={storyItem.series.collectionURI}>
                   {storyItem.series.items.map((item) => (
                     <CardFooter key={item.resourceURI}>
-                      <Link href={item.resourceURI}>{item.name}</Link>
+                      <Link href={modifyUrl(item.resourceURI)}>
+                        {item.name}
+                      </Link>
                     </CardFooter>
                   ))}
                 </Link>
@@ -97,7 +100,7 @@ const StoryPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Events:</h3>
               {storyItem.events.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>
@@ -105,7 +108,7 @@ const StoryPage: NextPage<Props> = async ({ params }) => {
               <h3 className="font-semibold m-2">Comics:</h3>
               {storyItem.comics.items.map((item) => (
                 <CardFooter key={item.resourceURI}>
-                  <Link href={item.resourceURI}>{item.name}</Link>
+                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
                 </CardFooter>
               ))}
             </div>

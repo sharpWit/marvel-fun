@@ -10,7 +10,7 @@ import Footer from "@/components/footer/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Marvel-fun Next App",
+  title: "Marvel Next App",
   description: "Created by Saeed Khosravi",
 };
 
