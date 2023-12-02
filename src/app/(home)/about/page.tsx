@@ -17,7 +17,7 @@ const page = () => {
           />
         </figure>
         <div className="dui-card-body text-neutral-content">
-          <h2 className="dui-card-title">FrontEnd Web Developer</h2>
+          <h2 className="dui-card-title">Frontend Web Developer</h2>
           <p>UI/UX Designer & ReactJS developer</p>
           <div className="dui-card-actions justify-end">
             <Link

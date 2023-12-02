@@ -1,12 +1,13 @@
 "use client";
 
-import { ModeToggle } from "@/components/ui/ModeToggle";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+
 import Menu from "../menu/Menu";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Logo from "./Logo";
 import SearchBar from "../search/SearchBar";
+import { AspectRatio } from "../ui/AspectRatio";
+import { ModeToggle } from "@/components/ui/ModeToggle";
 
 const Header = () => {
   return (

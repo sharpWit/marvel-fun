@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/cards/Card";
@@ -17,6 +16,7 @@ import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
 import { IMarvelResponse } from "@/types/response";
 import { ICharactersInfo } from "@/types/characters";
 import { modifyUrl } from "@/lib/utils";
+import { Separator } from "@/components/ui/Separator";
 
 interface Props {
   params: { characterId: number };
@@ -45,19 +45,19 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
 
   return character.length
     ? character.map((char) => (
-        <Card key={char.id} className="flex flex-col md:flex-wrap md:flex-row">
+        <Card key={char.id} className="flex flex-col lg:flex-wrap lg:flex-row">
           <CardHeader className="flex-1 ">
             <CardTitle>{char.name}</CardTitle>
-            <CardDescription>{char.description}</CardDescription>
-            <CardFooter className="!mt-auto">
-              {char.urls.map((url) => (
-                <ul key={url.url} className="p-1">
-                  <Link href={url.url}>
-                    <Badge>{url.type}</Badge>
-                  </Link>
-                </ul>
+            <CardDescription className="!mb-8">
+              {char.description}
+            </CardDescription>
+            <CardContent className="!mt-auto">
+              {char.urls.map((url, index) => (
+                <Badge key={index} className="mr-1">
+                  <Link href={url.url}>{url.type}</Link>
+                </Badge>
               ))}
-            </CardFooter>
+            </CardContent>
           </CardHeader>
           <CardContent className="flex-1 w-full p-2">
             <AspectRatio ratio={1 / 1}>
@@ -75,33 +75,33 @@ const CharacterPage: NextPage<Props> = async ({ params }) => {
             <div className="my-3">
               <h3 className="font-semibold m-2">Comics:</h3>
               {char.comics.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
               ))}
             </div>
+            <Separator />
             <div className="my-3">
               <h3 className="font-semibold m-2">Series:</h3>
               {char.series.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
               ))}
             </div>
+            <Separator />
             <div className="my-3">
               <h3 className="font-semibold m-2">Events:</h3>
               {char.events.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
-              ))}
-            </div>
-            <div className="my-3">
-              <h3 className="font-semibold m-2">Stories:</h3>
-              {char.stories.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
               ))}
             </div>
           </CardContent>

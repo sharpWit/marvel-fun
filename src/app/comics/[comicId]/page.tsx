@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/cards/Card";
@@ -17,6 +16,7 @@ import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
 import { IComicsInfo } from "@/types/comics";
 import { IMarvelResponse } from "@/types/response";
 import { modifyUrl } from "@/lib/utils";
+import { Separator } from "@/components/ui/Separator";
 
 interface Props {
   params: { comicId: number };
@@ -46,20 +46,20 @@ const ComicPage: NextPage<Props> = async ({ params }) => {
     ? comic.map((comicItem) => (
         <Card
           key={comicItem.id}
-          className="flex flex-col md:flex-wrap md:flex-row"
+          className="flex flex-col lg:flex-wrap lg:flex-row"
         >
           <CardHeader className="flex-1">
             <CardTitle>{comicItem.title}</CardTitle>
-            <CardDescription>{comicItem.description}</CardDescription>
-            <CardFooter className="!mt-auto flex-wrap">
-              {comicItem.urls.map((url) => (
-                <ul key={url.url} className="p-1">
-                  <Link href={url.url}>
-                    <Badge>{url.type}</Badge>
-                  </Link>
-                </ul>
+            <CardDescription className="!mb-8">
+              {comicItem.description}
+            </CardDescription>
+            <CardContent className="!mt-auto">
+              {comicItem.urls.map((url, index) => (
+                <Badge key={index} className="mr-1">
+                  <Link href={url.url}>{url.type}</Link>
+                </Badge>
               ))}
-            </CardFooter>
+            </CardContent>
           </CardHeader>
           <CardContent className="flex-1 w-full p-2">
             <AspectRatio ratio={1 / 1}>
@@ -73,37 +73,39 @@ const ComicPage: NextPage<Props> = async ({ params }) => {
               />
             </AspectRatio>
           </CardContent>
+
           <CardContent className="basis-full p-2">
             <div className="my-3">
               <h3 className="font-semibold m-2">Creators:</h3>
               {comicItem.creators.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
               ))}
             </div>
+            <Separator />
             <div className="my-3">
-              <h3 className="font-semibold m-2">Series:</h3>
-              <CardFooter>
-                <Link href={modifyUrl(comicItem.series.resourceURI)}>
-                  {comicItem.series.name}
-                </Link>
-              </CardFooter>
+              <h3 className="font-semibold m-2">Characters:</h3>
+              {comicItem.characters.items.map((item) => (
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
+              ))}
             </div>
+            <Separator />
+
             <div className="my-3">
               <h3 className="font-semibold m-2">Events:</h3>
               {comicItem.events.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
-              ))}
-            </div>
-            <div className="my-3">
-              <h3 className="font-semibold m-2">Stories:</h3>
-              {comicItem.stories.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
               ))}
             </div>
           </CardContent>

@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/cards/Card";
@@ -17,6 +16,7 @@ import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
 import { IMarvelResponse } from "@/types/response";
 import { IEventsInfo } from "@/types/events";
 import { modifyUrl } from "@/lib/utils";
+import { Separator } from "@/components/ui/Separator";
 
 interface Props {
   params: { eventId: number };
@@ -46,20 +46,20 @@ const EventPage: NextPage<Props> = async ({ params }) => {
     ? event.map((eventItem) => (
         <Card
           key={eventItem.id}
-          className="flex flex-col md:flex-wrap md:flex-row"
+          className="flex flex-col lg:flex-wrap lg:flex-row"
         >
           <CardHeader className="flex-1 ">
             <CardTitle>{eventItem.title}</CardTitle>
-            <CardDescription>{eventItem.description}</CardDescription>
-            <CardFooter className="!mt-auto">
-              {eventItem.urls.map((url) => (
-                <ul key={url.url} className="p-1">
-                  <Link href={url.url}>
-                    <Badge>{url.type}</Badge>
-                  </Link>
-                </ul>
+            <CardDescription className="!mb-8">
+              {eventItem.description}
+            </CardDescription>
+            <CardContent className="!mt-auto">
+              {eventItem.urls.map((url, index) => (
+                <Badge key={index} className="mr-1">
+                  <Link href={url.url}>{url.type}</Link>
+                </Badge>
               ))}
-            </CardFooter>
+            </CardContent>
           </CardHeader>
           <CardContent className="flex-1 w-full p-2">
             <AspectRatio ratio={1 / 1}>
@@ -77,39 +77,45 @@ const EventPage: NextPage<Props> = async ({ params }) => {
             <div className="my-3">
               <h3 className="font-semibold m-2">Creators:</h3>
               {eventItem.creators.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
               ))}
             </div>
+            <Separator />
+            <div className="my-3">
+              <h3 className="font-semibold m-2">Characters:</h3>
+              {eventItem.characters.items.map((item) => (
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
+              ))}
+            </div>
+            <Separator />
             <div className="my-3">
               <h3 className="font-semibold m-2">Series:</h3>
-              <CardFooter>
-                <Link href={eventItem.series.collectionURI}>
-                  {eventItem.series.items.map((item) => (
-                    <CardFooter key={item.resourceURI}>
-                      <Link href={modifyUrl(item.resourceURI)}>
-                        {item.name}
-                      </Link>
-                    </CardFooter>
-                  ))}
-                </Link>
-              </CardFooter>
+              {eventItem.series.items.map((item) => (
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
+              ))}
             </div>
+            <Separator />
+
             <div className="my-3">
               <h3 className="font-semibold m-2">Comics:</h3>
               {eventItem.comics.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
-              ))}
-            </div>
-            <div className="my-3">
-              <h3 className="font-semibold m-2">Stories:</h3>
-              {eventItem.stories.items.map((item) => (
-                <CardFooter key={item.resourceURI}>
-                  <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
-                </CardFooter>
+                <ul key={item.resourceURI}>
+                  <li className="p-1 mb-2">
+                    <Link href={modifyUrl(item.resourceURI)}>{item.name}</Link>
+                  </li>
+                </ul>
               ))}
             </div>
           </CardContent>

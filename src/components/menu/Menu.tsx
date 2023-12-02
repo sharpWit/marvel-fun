@@ -9,6 +9,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "./NavigationMenu";
+import { Separator } from "../ui/Separator";
 
 const Menu = () => {
   return (
@@ -42,11 +43,7 @@ const Menu = () => {
                 Series
               </NavigationMenuLink>
             </Link>
-            <Link href="/stories" legacyBehavior passHref>
-              <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
-                Stories
-              </NavigationMenuLink>
-            </Link>
+            <Separator />
             <Link href="/about" legacyBehavior passHref>
               <NavigationMenuLink className="p-2 rounded-sm hover:bg-yellow-500 hover:text-primary-foreground">
                 About me

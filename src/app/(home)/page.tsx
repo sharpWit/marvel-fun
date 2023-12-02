@@ -1,14 +1,13 @@
 "use client";
 
+import { motion } from "framer-motion";
+
+import { Separator } from "@/components/ui/Separator";
 import AnimatedBg from "@/components/animation/AnimatedBg";
 import AnimatedHammer from "@/components/animation/AnimatedHammer";
 import AnimatedCharacters from "@/components/animation/AnimatedText";
-import { Separator } from "@/components/ui/Separator";
-import { motion } from "framer-motion";
-import { useState } from "react";
 
 export default function Home() {
-  const [replay, setReplay] = useState(true);
   // Placeholder text data, as if from API
   const placeholderText = [
     { type: "heading1", text: "SAEED KHOSRAVI" },
@@ -32,7 +31,7 @@ export default function Home() {
         className="text-center my-4" // Use the CSS module
         initial="hidden"
         // animate="visible"
-        animate={replay ? "visible" : "hidden"}
+        animate={"visible"}
         variants={container}
       >
         <div className="w-full">

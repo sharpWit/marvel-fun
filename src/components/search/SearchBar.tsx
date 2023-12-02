@@ -13,7 +13,7 @@ import { Button } from "../ui/buttons/Button";
 const SearchBar: React.FC = () => {
   const clickPoint = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState("");
-  const debouncedSearchTerm = useDebounce(search, 200);
+  const debouncedSearchTerm = useDebounce(search, 1000);
   const {
     data: resultsData,
     isLoading,
