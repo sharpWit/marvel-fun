@@ -19,11 +19,32 @@ My Github
 
 - [Description](#description)
 - [Installation](#installation)
+- [Requirement](#requirement)
 - [Usage](#usage)
 - [Scripts](#scripts)
 - [Dependencies](#dependencies)
 - [Dev Dependencies](#dev-dependencies)
 - [License](#license)
+
+## Requirement
+
+To ensure the seamless functionality of Marvel Blog, it is essential to obtain API access from Marvel. Follow these steps to acquire the necessary API key:
+
+1. Visit [Marvel Developer Portal](https://developer.marvel.com/).
+2. Read through the documentation to familiarize yourself with the Marvel API.
+3. Sign up for an account if you haven't already and log in.
+4. Navigate to the "Get A Key" section to obtain your unique public and private API keys.
+
+Once you have your Marvel API keys, create an `.env*.local` file in the root of your project and add the following:
+
+```env
+NEXT_PUBLIC_MARVEL_PUBLIC_KEY=your_public_key
+NEXT_PUBLIC_MARVEL_PRIVATE_KEY=your_private_key
+```
+
+Replace your_public_key and your_private_key with the corresponding keys you obtained from the Marvel Developer Portal.
+
+This step is crucial for enabling Marvel Blog to fetch and display content from the Marvel API. Make sure to keep your API keys secure and avoid sharing them publicly. If you have any concerns or questions regarding Marvel's API usage policies, refer to the Marvel API Terms of Use.
 
 ## Installation
 
