@@ -28,28 +28,29 @@ My Github
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/sharpWit/marvel-fun.git
    cd marvel-fun
    ```
 
-## Install dependencies:
+2. Install dependencies:
 
-```bash
+   ```bash
 
-npm install
-```
+   npm install
+   ```
 
-## Usage
+3. Usage
 
-To run the application locally, use the following command:
+   To run the application locally, use the following command:
 
-```bash
+   ```bash
 
-npm run dev
-```
+   npm run dev
+   ```
 
-Visit http://localhost:3000 in your browser to view the application.
+   Visit http://localhost:3000 in your browser to view the application.
 
 ## License
 
