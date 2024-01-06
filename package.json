@@ -1,6 +1,17 @@
 {
   "name": "marvel-blog",
   "version": "0.1.0",
+  "description": "Conceptualized and developed a creative comic website utilizing NextJS v14, showcasing design versatility and proficiency in frontend development.",
+  "keywords": [
+    "marvel",
+    "comic",
+    "blog",
+    "conceptual art"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sharpWit/marvel-fun"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
