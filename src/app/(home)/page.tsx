@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-
 import { Separator } from "@/components/ui/Separator";
 import AnimatedBg from "@/components/animation/AnimatedBg";
 import AnimatedHammer from "@/components/animation/AnimatedHammer";

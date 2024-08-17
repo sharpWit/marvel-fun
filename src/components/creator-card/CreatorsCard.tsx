@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import Loading from "@/app/loading";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
 import { AspectRatio } from "../ui/AspectRatio";
-import { Button } from "../ui/buttons/Button";
+import { Button } from "../ui/Button";
 import Pagination from "../ui/pagination/Pagination";
 import useCreator from "@/hooks/useCreators";
 

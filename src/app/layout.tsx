@@ -1,11 +1,9 @@
+import "../styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
-import "../styles/globals.css";
-import { ThemeProvider } from "@/providers/ThemeProvider";
-import QueryProvider from "@/providers/QueryProvider";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,20 +20,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-red-600 `}>
-        <QueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header />
-            <main className="container pt-4 lg:pt-32 min-h-screen">
-              {children}
-            </main>
-            <Footer />
-          </ThemeProvider>
-        </QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          <main className="container pt-4 lg:pt-32 min-h-screen">
+            {children}
+          </main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

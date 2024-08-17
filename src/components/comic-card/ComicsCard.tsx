@@ -1,52 +1,29 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import Loading from "@/app/loading";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/cards/Card";
+} from "../ui/Card";
 
-import useComics from "@/hooks/useComics";
 import { AspectRatio } from "../ui/AspectRatio";
-import { Button } from "../ui/buttons/Button";
-import Pagination from "../ui/pagination/Pagination";
+import { Button } from "../ui/Button";
+import PaginationCP from "../ui/pagination/pagination-cp";
 
-const ComicsCard = () => {
-  const {
-    marvelComics,
-    isError,
-    error,
-    isPending,
-    isFetching,
-    isPlaceholderData,
-    page,
-    setPage,
-  } = useComics();
+interface Props {
+  marvelComics: any;
+}
 
-  const marvelComicsObjs = marvelComics?.data.results;
-
-  if (isPending) {
-    return <Loading />;
-  }
-  if (isError) {
-    return <p>Error: {error?.message}</p>;
-  }
-  if (isFetching) {
-    return <Loading />;
-  }
-
+const ComicsCard: React.FC<Props> = ({ marvelComics }) => {
   return (
     <>
       <h2 className="m-2 p-2 text-yellow-300 drop-shadow-lg text-xl md:text-2xl font-bold">
         Marvel Comics
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {marvelComicsObjs?.map((comic) => (
+        {marvelComics.data.data.results?.map((comic) => (
           <Card key={comic.id} className="flex flex-col md:flex-row">
             <CardContent className="flex-1 p-4 w-full">
               <AspectRatio ratio={1 / 1}>
@@ -72,12 +49,7 @@ const ComicsCard = () => {
           </Card>
         ))}
       </div>
-      <Pagination
-        page={page}
-        setPage={setPage}
-        isPlaceholderData={isPlaceholderData}
-        data={marvelComics?.data}
-      />
+      <PaginationCP data={marvelComics} />
     </>
   );
 };

@@ -1,59 +1,27 @@
+"use client";
+
 import { FC } from "react";
+import { useSearchParams } from "next/navigation";
+import { PAGE_SIZE } from "@/lib/constants";
+import { PaginationWithLinks } from "./pagination-with-link";
 
-const PAGE_SIZE = 20; // Adjust this based on your API's page size
-
-interface PaginationProps<T> {
-  page: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-  data?: {
-    total?: number;
-  };
-  isPlaceholderData: boolean;
+interface PaginationProps {
+  totalData?: number;
 }
-const Pagination: FC<PaginationProps<any>> = ({
-  page,
-  setPage,
-  data,
-  isPlaceholderData,
-}) => {
-  return (
-    <div className="dui-join grid grid-cols-3 mt-4">
-      <button
-        className="dui-join-item dui-btn dui-btn-outline"
-        onClick={() => {
-          if (page > 0) {
-            setPage((old) => old - 1);
-          }
-        }}
-        disabled={page === 0}
-      >
-        Previous page
-      </button>
-      <span className="dui-join-item dui-btn dui-btn-disabled dui-btn-outline !text-neutral/90">
-        Current Page: {page + 1}
-      </span>
 
-      <button
-        className="dui-join-item dui-btn dui-btn-outline"
-        onClick={() => {
-          if (
-            !isPlaceholderData &&
-            data?.total !== undefined &&
-            data.total > (page + 1) * PAGE_SIZE
-          ) {
-            setPage((old) => old + 1);
-          }
-        }}
-        // Disable the Next Page button until we know a next page is available
-        disabled={
-          isPlaceholderData ||
-          data?.total === undefined ||
-          data.total <= (page + 1) * PAGE_SIZE
-        }
-      >
-        Next
-      </button>
+const Pagination: FC<PaginationProps> = ({ totalData }) => {
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page"));
+
+  return (
+    <div className="w-full mx-auto py-3 flex content-center items-center ">
+      <PaginationWithLinks
+        page={page}
+        pageSize={PAGE_SIZE}
+        totalCount={totalData || 0}
+      />
     </div>
   );
 };
+
 export default Pagination;
