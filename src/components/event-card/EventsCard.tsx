@@ -9,10 +9,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/cards/Card";
+} from "../ui/Card";
 
 import { AspectRatio } from "../ui/AspectRatio";
-import { Button } from "../ui/buttons/Button";
+import { Button } from "../ui/Button";
 import Pagination from "../ui/pagination/Pagination";
 import useEvents from "@/hooks/useEvents";
 

@@ -1,47 +1,53 @@
-import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 import { NextPage } from "next";
-
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/cards/Card";
-import { Badge } from "@/components/ui/Badge";
-import { AspectRatio } from "@/components/ui/AspectRatio";
-import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
-import { IMarvelResponse } from "@/types/response";
-import { ICharactersInfo } from "@/types/characters";
+} from "@/components/ui/Card";
 import { modifyUrl } from "@/lib/utils";
+import { Badge } from "@/components/ui/Badge";
+import { IMarvelRes } from "@/types/response";
+import { ICharactersInfo } from "@/types/characters";
 import { Separator } from "@/components/ui/Separator";
+import { AspectRatio } from "@/components/ui/AspectRatio";
+import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
+import { getCharecterByID } from "@/services/endpoints";
+import { cache } from "react";
+import AxiosAdapter from "@/services/fetch-in-server";
+import { PAGE_SIZE } from "@/lib/constants";
+
+const getCharacter = cache(
+  async (params: number): Promise<IMarvelRes<ICharactersInfo>> => {
+    const { url: charURL, method } = getCharecterByID(params);
+    const offset = params ?? 0 * PAGE_SIZE; // Calculate the offset based on the page number and page size
+
+    const res = await AxiosAdapter(
+      {
+        url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
+        method,
+      },
+      undefined,
+      false
+    );
+    // console.log("RES: ", res);
+    return res;
+  }
+);
 
 interface Props {
   params: { characterId: number };
 }
 
-const apiUrl = "https://gateway.marvel.com/v1/public/characters";
-
-const getData = async (characterId: number) => {
-  try {
-    const res = await axios.get<IMarvelResponse<ICharactersInfo>>(
-      `${apiUrl}/${characterId}?${apiKeyParam}&${tsParam}&${hashParam}`
-    );
-    if (res.status !== 200) {
-      throw new Error("Error fetching Marvel character!");
-    }
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error; // Rethrow the error or handle it appropriately
-  }
-};
-
 const CharacterPage: NextPage<Props> = async ({ params }) => {
-  const characterObj = await getData(params.characterId);
-  const character = characterObj.data.results;
+  const characterObj = await getCharacter(params.characterId);
+  const character = characterObj.data.data.results;
+
+  // console.log("characterObj: ", characterObj);
+  // console.log("character: ", character);
 
   return character.length
     ? character.map((char) => (

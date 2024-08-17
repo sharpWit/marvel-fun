@@ -9,10 +9,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/cards/Card";
+} from "@/components/ui/Card";
 import { AspectRatio } from "@/components/ui/AspectRatio";
 import { Badge } from "@/components/ui/Badge";
-import { apiKeyParam, hashParam, tsParam } from "@/app/api/marvel/urlParams";
+import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 import { IMarvelResponse } from "@/types/response";
 import { ICreatorsInfo } from "@/types/creators";
 import { modifyUrl } from "@/lib/utils";

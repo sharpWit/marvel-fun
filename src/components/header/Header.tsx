@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import Menu from "../menu/Menu";
 import Logo from "./Logo";
-import SearchBar from "../search/SearchBar";
+// import SearchBar from "../_search/SearchBar";
 import { AspectRatio } from "../ui/AspectRatio";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 
@@ -17,7 +17,7 @@ const Header = () => {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-1">
               <ModeToggle />
-              <SearchBar />
+              {/* <SearchBar /> */}
             </div>
             <Menu />
           </div>
@@ -29,7 +29,7 @@ const Header = () => {
         <div className="flex flex-col items-center justify-between gap-2">
           <div className="self-start flex items-center justify-center gap-1">
             <ModeToggle />
-            <SearchBar />
+            {/* <SearchBar /> */}
           </div>
           <Menu />
         </div>

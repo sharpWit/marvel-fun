@@ -8,7 +8,7 @@ import SearchResults from "./SearchResults";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 import { Search } from "lucide-react";
 import { Input } from "../form/Input";
-import { Button } from "../ui/buttons/Button";
+import { Button } from "../ui/Button";
 
 const SearchBar: React.FC = () => {
   const clickPoint = useRef<HTMLDivElement>(null);
