@@ -3,7 +3,6 @@
 import { useRef, useState } from "react";
 import Loading from "@/app/loading";
 import useDebounce from "@/hooks/useDebounce";
-import useSearchbar from "@/hooks/useSearchBar";
 import SearchResults from "./SearchResults";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 import { Search } from "lucide-react";
@@ -14,11 +13,11 @@ const SearchBar: React.FC = () => {
   const clickPoint = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState("");
   const debouncedSearchTerm = useDebounce(search, 1000);
-  const {
-    data: resultsData,
-    isLoading,
-    error,
-  } = useSearchbar(debouncedSearchTerm);
+  // const {
+  //   data: resultsData,
+  //   isLoading,
+  //   error,
+  // } = useSearchbar(debouncedSearchTerm);
   const [modalRoot, setModalRoot] = useState(false);
 
   const handleFocus = () => {

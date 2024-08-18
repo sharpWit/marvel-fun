@@ -11,7 +11,7 @@ import { IMarvelRes } from "@/types/response";
 import { ICharactersInfo } from "@/types/characters";
 import { Button } from "../ui/Button";
 import { AspectRatio } from "../ui/AspectRatio";
-import Pagination from "../ui/pagination/Pagination";
+import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
   marvelCharacters: IMarvelRes<ICharactersInfo>;

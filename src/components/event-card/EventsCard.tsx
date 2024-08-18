@@ -13,7 +13,7 @@ import { Button } from "../ui/Button";
 import { IMarvelRes } from "@/types/response";
 import { IEventsInfo } from "@/types/events";
 import { AspectRatio } from "../ui/AspectRatio";
-import Pagination from "../ui/pagination/Pagination";
+import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
   marvelEvents: IMarvelRes<IEventsInfo>;

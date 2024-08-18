@@ -6,7 +6,7 @@ import { Button } from "../ui/Button";
 import { IMarvelRes } from "@/types/response";
 import { AspectRatio } from "../ui/AspectRatio";
 import { ICreatorsInfo } from "@/types/creators";
-import Pagination from "../ui/pagination/Pagination";
+import Pagination from "@/components/pagination/Pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
 interface Props {
