@@ -13,7 +13,7 @@ import { Button } from "../ui/Button";
 import { ISeriesInfo } from "@/types/series";
 import { IMarvelRes } from "@/types/response";
 import { AspectRatio } from "../ui/AspectRatio";
-import Pagination from "../ui/pagination/Pagination";
+import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
   marvelSeries: IMarvelRes<ISeriesInfo>;
