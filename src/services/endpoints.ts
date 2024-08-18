@@ -35,7 +35,15 @@ export const getAllEvents = (): RequestConfig => ({
   url: "events",
   method: "GET",
 });
+export const getEventByID = (id: number): RequestConfig => ({
+  url: `events/${id}`,
+  method: "GET",
+});
 export const getAllSeries = (): RequestConfig => ({
   url: "series",
+  method: "GET",
+});
+export const getSerieByID = (id: number): RequestConfig => ({
+  url: `series/${id}`,
   method: "GET",
 });
