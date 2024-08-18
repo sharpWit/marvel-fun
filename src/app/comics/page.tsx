@@ -1,13 +1,15 @@
-import ComicsCard from "@/components/comic-card/ComicsCard";
+import { cache } from "react";
+import { NextPage } from "next";
 import { PAGE_SIZE } from "@/lib/constants";
-import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 import { getAllComics } from "@/services/endpoints";
 import AxiosAdapter from "@/services/fetch-in-server";
-import { NextPage } from "next";
+import ComicsCard from "@/components/comic-card/ComicsCard";
+import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 
 const { url: charURL, method, data } = getAllComics();
-const getComics = async (params?: any) => {
-  const offset = params ?? 0 * PAGE_SIZE; // Calculate the offset based on the page number and page size
+
+const getComics = cache(async (params?: any) => {
+  const offset = params ?? 0 * PAGE_SIZE;
   const res = await AxiosAdapter(
     {
       url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
@@ -17,9 +19,8 @@ const getComics = async (params?: any) => {
     undefined,
     false
   );
-  console.log("RES: ", res);
   return res;
-};
+});
 
 interface Props {
   searchParams: any;

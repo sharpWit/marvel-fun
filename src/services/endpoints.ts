@@ -19,10 +19,15 @@ export const getAllComics = (): RequestConfig => ({
   url: "comics",
   method: "GET",
 });
+export const getComicByID = (id: number): RequestConfig => ({
+  url: `comics/${id}`,
+  method: "GET",
+});
 export const getAllCreators = (): RequestConfig => ({
   url: "creators",
   method: "GET",
 });
+
 export const getAllEvents = (): RequestConfig => ({
   url: "events",
   method: "GET",
