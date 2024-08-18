@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
-
 import Menu from "../menu/Menu";
 import Logo from "./Logo";
-
 import { AspectRatio } from "../ui/AspectRatio";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import SearchBar from "../search/SearchBar";
+
+
 
 const Header = () => {
   return (
