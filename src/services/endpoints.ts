@@ -27,7 +27,10 @@ export const getAllCreators = (): RequestConfig => ({
   url: "creators",
   method: "GET",
 });
-
+export const getCreatorByID = (id: number): RequestConfig => ({
+  url: `creators/${id}`,
+  method: "GET",
+});
 export const getAllEvents = (): RequestConfig => ({
   url: "events",
   method: "GET",

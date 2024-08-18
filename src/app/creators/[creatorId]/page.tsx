@@ -1,8 +1,7 @@
-import axios from "axios";
+import { cache } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NextPage } from "next";
-
 import {
   Card,
   CardContent,
@@ -10,38 +9,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { AspectRatio } from "@/components/ui/AspectRatio";
-import { Badge } from "@/components/ui/Badge";
-import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
-import { IMarvelResponse } from "@/types/response";
-import { ICreatorsInfo } from "@/types/creators";
 import { modifyUrl } from "@/lib/utils";
+import { PAGE_SIZE } from "@/lib/constants";
+import { Badge } from "@/components/ui/Badge";
+import { IMarvelRes } from "@/types/response";
+import { ICreatorsInfo } from "@/types/creators";
 import { Separator } from "@/components/ui/Separator";
+import { getCreatorByID } from "@/services/endpoints";
+import AxiosAdapter from "@/services/fetch-in-server";
+import { AspectRatio } from "@/components/ui/AspectRatio";
+import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
+
+const getCreator = cache(
+  async (params: number): Promise<IMarvelRes<ICreatorsInfo>> => {
+    const { url: charURL, method } = getCreatorByID(params);
+    const offset = params ?? 0 * PAGE_SIZE;
+
+    const res: IMarvelRes<ICreatorsInfo> = await AxiosAdapter(
+      {
+        url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
+        method,
+      },
+      undefined,
+      false
+    );
+    // console.log("RES: ", res);
+    return res;
+  }
+);
 
 interface Props {
   params: { creatorId: number };
 }
 
-const apiUrl = "https://gateway.marvel.com/v1/public/creators";
-
-const getData = async (creatorId: number) => {
-  try {
-    const res = await axios.get<IMarvelResponse<ICreatorsInfo>>(
-      `${apiUrl}/${creatorId}?${apiKeyParam}&${tsParam}&${hashParam}`
-    );
-    if (res.status !== 200) {
-      throw new Error("Error fetching Marvel creator!");
-    }
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error; // Rethrow the error or handle it appropriately
-  }
-};
-
 const CreatorPage: NextPage<Props> = async ({ params }) => {
-  const creatorObj = await getData(params.creatorId);
-  const creator = creatorObj.data.results;
+  const creatorObj = await getCreator(params.creatorId);
+  const creator = creatorObj.data.data.results;
 
   return creator.length
     ? creator.map((creatorItem) => (

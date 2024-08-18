@@ -25,7 +25,7 @@ const getCharacter = cache(
     const { url: charURL, method } = getCharecterByID(params);
     const offset = params ?? 0 * PAGE_SIZE; // Calculate the offset based on the page number and page size
 
-    const res = await AxiosAdapter(
+    const res: IMarvelRes<ICharactersInfo> = await AxiosAdapter(
       {
         url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
         method,

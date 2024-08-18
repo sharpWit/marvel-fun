@@ -25,7 +25,7 @@ const getComic = cache(
     const { url: comicURL, method } = getComicByID(params);
     const offset = params ?? 0 * PAGE_SIZE;
 
-    const res = await AxiosAdapter(
+    const res: IMarvelRes<IComicsInfo> = await AxiosAdapter(
       {
         url: `${comicURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
         method,
