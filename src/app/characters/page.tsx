@@ -13,8 +13,9 @@ const { url: charURL, method, data } = getAllChars();
 const getCharacters = cache(
   async (params?: number): Promise<IMarvelRes<ICharactersInfo>> => {
     // const startTime = performance.now();
+    const offset =
+      (typeof params !== "number" || isNaN(params) ? 0 : params) * PAGE_SIZE;
 
-    const offset = params ?? 0 * PAGE_SIZE; // Calculate the offset based on the page number and page size
     const res: IMarvelRes<ICharactersInfo> = await AxiosAdapter(
       {
         url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,

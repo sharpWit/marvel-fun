@@ -1,8 +1,7 @@
-import axios from "axios";
+import { cache } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { NextPage } from "next";
-import Link from "next/link";
-
 import {
   Card,
   CardContent,
@@ -10,38 +9,43 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { AspectRatio } from "@/components/ui/AspectRatio";
-import { Badge } from "@/components/ui/Badge";
-import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
-import { IMarvelResponse } from "@/types/response";
-import { ISeriesInfo } from "@/types/series";
 import { modifyUrl } from "@/lib/utils";
+import { PAGE_SIZE } from "@/lib/constants";
+import { ISeriesInfo } from "@/types/series";
+import { IMarvelRes } from "@/types/response";
+import { Badge } from "@/components/ui/Badge";
+import { getSerieByID } from "@/services/endpoints";
 import { Separator } from "@/components/ui/Separator";
+import AxiosAdapter from "@/services/fetch-in-server";
+import { AspectRatio } from "@/components/ui/AspectRatio";
+import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
+
+const getSerie = cache(
+  async (params: number): Promise<IMarvelRes<ISeriesInfo>> => {
+    const { url: serieURL, method } = getSerieByID(params);
+    const offset = params ?? 0 * PAGE_SIZE;
+
+    const res: IMarvelRes<ISeriesInfo> = await AxiosAdapter(
+      {
+        url: `${serieURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
+        method,
+      },
+      undefined,
+      false
+    );
+    // console.log("RES: ", res);
+    return res;
+  }
+);
 
 interface Props {
   params: { seriesId: number };
 }
 
-const apiUrl = "https://gateway.marvel.com/v1/public/series";
-
-const getData = async (seriesId: number) => {
-  try {
-    const res = await axios.get<IMarvelResponse<ISeriesInfo>>(
-      `${apiUrl}/${seriesId}?${apiKeyParam}&${tsParam}&${hashParam}`
-    );
-    if (res.status !== 200) {
-      throw new Error("Error fetching Marvel serie!");
-    }
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error; // Rethrow the error or handle it appropriately
-  }
-};
-
 const SeriePage: NextPage<Props> = async ({ params }) => {
-  const serieObj = await getData(params.seriesId);
-  const serie = serieObj.data.results;
+  const serieObj = await getSerie(params.seriesId);
+  const serie = serieObj.data.data.results;
+
   return serie.length
     ? serie.map((serieItem) => (
         <Card

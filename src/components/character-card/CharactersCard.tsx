@@ -11,7 +11,7 @@ import { IMarvelRes } from "@/types/response";
 import { ICharactersInfo } from "@/types/characters";
 import { Button } from "../ui/Button";
 import { AspectRatio } from "../ui/AspectRatio";
-import Pagination from "../ui/pagination/Pagination";
+import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
   marvelCharacters: IMarvelRes<ICharactersInfo>;
@@ -23,8 +23,8 @@ const CharactersCard: React.FC<Props> = ({ marvelCharacters }) => {
         Marvel Characters
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {marvelCharacters.data.data.results.map(
-          (character: ICharactersInfo) => (
+        {marvelCharacters && marvelCharacters?.data?.data?.count > 0 ? (
+          marvelCharacters.data.data.results.map((character) => (
             <Card key={character.id} className="flex flex-col md:flex-row">
               <CardContent className="flex-1 p-4 w-full">
                 <AspectRatio ratio={1 / 1}>
@@ -51,10 +51,16 @@ const CharactersCard: React.FC<Props> = ({ marvelCharacters }) => {
                 </Link>
               </CardHeader>
             </Card>
-          )
+          ))
+        ) : (
+          <div className="flex items-center w-full p-3">
+            <h2 className="bg-yellow-300 p-2 rounded-md">
+              There's no character yet!
+            </h2>
+          </div>
         )}
       </div>
-      <Pagination totalData={marvelCharacters.data.data.total} />
+      <Pagination totalData={marvelCharacters.data?.data?.total ?? 0} />
     </>
   );
 };

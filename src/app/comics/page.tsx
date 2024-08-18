@@ -1,25 +1,32 @@
-import ComicsCard from "@/components/comic-card/ComicsCard";
+import { cache } from "react";
+import { NextPage } from "next";
 import { PAGE_SIZE } from "@/lib/constants";
-import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
+import { IComicsInfo } from "@/types/comics";
+import { IMarvelRes } from "@/types/response";
 import { getAllComics } from "@/services/endpoints";
 import AxiosAdapter from "@/services/fetch-in-server";
-import { NextPage } from "next";
+import ComicsCard from "@/components/comic-card/ComicsCard";
+import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 
-const { url: charURL, method, data } = getAllComics();
-const getComics = async (params?: any) => {
-  const offset = params ?? 0 * PAGE_SIZE; // Calculate the offset based on the page number and page size
-  const res = await AxiosAdapter(
-    {
-      url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
-      method,
-      data,
-    },
-    undefined,
-    false
-  );
-  console.log("RES: ", res);
-  return res;
-};
+const { url: comicURL, method, data } = getAllComics();
+
+const getComics = cache(
+  async (params?: number): Promise<IMarvelRes<IComicsInfo>> => {
+    const offset =
+      (typeof params !== "number" || isNaN(params) ? 0 : params) * PAGE_SIZE;
+
+    const res: IMarvelRes<IComicsInfo> = await AxiosAdapter(
+      {
+        url: `${comicURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
+        method,
+        data,
+      },
+      undefined,
+      false
+    );
+    return res;
+  }
+);
 
 interface Props {
   searchParams: any;
