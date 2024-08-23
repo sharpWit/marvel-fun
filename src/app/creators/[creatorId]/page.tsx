@@ -1,4 +1,3 @@
-import { cache } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NextPage } from "next";
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import env from "@/services/env";
 import { modifyUrl } from "@/lib/utils";
 import { PAGE_SIZE } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
@@ -16,27 +16,36 @@ import { IMarvelRes } from "@/types/response";
 import { ICreatorsInfo } from "@/types/creators";
 import { Separator } from "@/components/ui/Separator";
 import { getCreatorByID } from "@/services/endpoints";
-import AxiosAdapter from "@/services/fetch-in-server";
+
 import { AspectRatio } from "@/components/ui/AspectRatio";
 import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 
-const getCreator = cache(
-  async (params: number): Promise<IMarvelRes<ICreatorsInfo>> => {
-    const { url: charURL, method } = getCreatorByID(params);
-    const offset = params ?? 0 * PAGE_SIZE;
+// Fetch creator data
+const getCreator = async (
+  params: number
+): Promise<IMarvelRes<ICreatorsInfo>> => {
+  const offset = (params ?? 0) * PAGE_SIZE;
+  const { url: creatorURL } = getCreatorByID(params);
 
-    const res: IMarvelRes<ICreatorsInfo> = await AxiosAdapter(
-      {
-        url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
-        method,
-      },
-      undefined,
-      false
+  try {
+    const res = await fetch(
+      `${env.API_URL}${creatorURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
     );
-    // console.log("RES: ", res);
-    return res;
+
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch creator data: ${res.status} ${res.statusText}`
+      );
+    }
+
+    const data: IMarvelRes<ICreatorsInfo> = await res.json();
+    // console.log("Creator Data: ", data);
+    return data;
+  } catch (error) {
+    console.error("Fetch Error: ", error);
+    throw error;
   }
-);
+};
 
 interface Props {
   params: { creatorId: number };
@@ -44,10 +53,15 @@ interface Props {
 
 const CreatorPage: NextPage<Props> = async ({ params }) => {
   const creatorObj = await getCreator(params.creatorId);
-  const creator = creatorObj.data.data.results;
+  // Handle case where creator data is not returned
+  if (!creatorObj || !creatorObj.data) {
+    return <p>There is no creator</p>;
+  }
 
-  return creator.length
-    ? creator.map((creatorItem) => (
+  const creatorData = creatorObj.data.results;
+
+  return creatorData && creatorData.length > 0
+    ? creatorData.map((creatorItem) => (
         <Card
           key={creatorItem.id}
           className="flex flex-col lg:flex-wrap lg:flex-row"

@@ -6,8 +6,8 @@ interface ISeriesUrl {
 interface ISeriesItem {
   resourceURI: string;
   name: string;
-  type?: string; // Add the type property if applicable
-  role?: string; // Add the role property if applicable
+  type?: string;
+  role?: string;
 }
 
 export interface ISeriesInfo {

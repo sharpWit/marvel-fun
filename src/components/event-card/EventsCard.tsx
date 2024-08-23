@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -10,24 +8,26 @@ import {
   CardTitle,
 } from "../ui/Card";
 import { Button } from "../ui/Button";
-import { IMarvelRes } from "@/types/response";
+import { IMarvelData } from "@/types/response";
 import { IEventsInfo } from "@/types/events";
 import { AspectRatio } from "../ui/AspectRatio";
 import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
-  marvelEvents: IMarvelRes<IEventsInfo>;
+  marvelEvents: IMarvelData<IEventsInfo>;
 }
 
 const EventsCard: React.FC<Props> = ({ marvelEvents }) => {
+  const events = marvelEvents.results;
+
   return (
     <>
       <h2 className="m-2 p-2 text-yellow-300 drop-shadow-lg text-xl md:text-2xl font-bold">
         Marvel Events
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {marvelEvents && marvelEvents.data.data.count > 0 ? (
-          marvelEvents.data.data.results?.map((event) => (
+        {events && events.length > 0 ? (
+          events.map((event) => (
             <Card key={event.id} className="flex flex-col md:flex-row">
               <CardContent className="flex-1 p-4 w-full">
                 <AspectRatio ratio={1 / 1}>
@@ -63,7 +63,7 @@ const EventsCard: React.FC<Props> = ({ marvelEvents }) => {
           </div>
         )}
       </div>
-      <Pagination totalData={marvelEvents.data?.data?.total ?? 0} />
+      <Pagination totalData={marvelEvents.total ?? 0} />
     </>
   );
 };

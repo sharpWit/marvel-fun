@@ -11,7 +11,7 @@ interface IComicsItems {
 interface IStoriesItems {
   resourceURI: string;
   name: string;
-  type: string;
+  type?: string;
 }
 
 interface IEventsItems {

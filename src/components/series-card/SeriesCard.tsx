@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,22 +9,24 @@ import {
 } from "../ui/Card";
 import { Button } from "../ui/Button";
 import { ISeriesInfo } from "@/types/series";
-import { IMarvelRes } from "@/types/response";
+import { IMarvelData } from "@/types/response";
 import { AspectRatio } from "../ui/AspectRatio";
 import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
-  marvelSeries: IMarvelRes<ISeriesInfo>;
+  marvelSeries: IMarvelData<ISeriesInfo>;
 }
 const SeriesCard: React.FC<Props> = ({ marvelSeries }) => {
+  const series = marvelSeries.results;
+
   return (
     <>
       <h2 className="m-2 p-2 text-yellow-300 drop-shadow-lg text-xl md:text-2xl font-bold">
         Marvel Series
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {marvelSeries && marvelSeries.data.data.count > 0 ? (
-          marvelSeries.data.data.results?.map((serie) => (
+        {series && series.length > 0 ? (
+          series.map((serie) => (
             <Card key={serie.id} className="flex flex-col md:flex-row">
               <CardContent className="flex-1 p-4 w-full">
                 <AspectRatio ratio={1 / 1}>
@@ -62,7 +62,7 @@ const SeriesCard: React.FC<Props> = ({ marvelSeries }) => {
           </div>
         )}
       </div>
-      <Pagination totalData={marvelSeries.data?.data?.total ?? 0} />
+      <Pagination totalData={marvelSeries.total ?? 0} />
     </>
   );
 };

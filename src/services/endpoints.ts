@@ -11,7 +11,7 @@ export const getAllChars = (): RequestConfig => ({
   url: "characters",
   method: "GET",
 });
-export const getCharecterByID = (id: number): RequestConfig => ({
+export const getCharacterByID = (id: number): RequestConfig => ({
   url: `characters/${id}`,
   method: "GET",
 });

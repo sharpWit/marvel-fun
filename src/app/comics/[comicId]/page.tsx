@@ -1,4 +1,3 @@
-import { cache } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NextPage } from "next";
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import env from "@/services/env";
 import { modifyUrl } from "@/lib/utils";
 import { PAGE_SIZE } from "@/lib/constants";
 import { IComicsInfo } from "@/types/comics";
@@ -16,37 +16,48 @@ import { IMarvelRes } from "@/types/response";
 import { Badge } from "@/components/ui/Badge";
 import { getComicByID } from "@/services/endpoints";
 import { Separator } from "@/components/ui/Separator";
-import AxiosAdapter from "@/services/fetch-in-server";
 import { AspectRatio } from "@/components/ui/AspectRatio";
 import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 
-const getComic = cache(
-  async (params: number): Promise<IMarvelRes<IComicsInfo>> => {
-    const { url: comicURL, method } = getComicByID(params);
-    const offset = params ?? 0 * PAGE_SIZE;
+// Fetch comic data
+const getComic = async (params: number): Promise<IMarvelRes<IComicsInfo>> => {
+  const offset = (params ?? 0) * PAGE_SIZE;
+  const { url: comicURL } = getComicByID(params);
 
-    const res: IMarvelRes<IComicsInfo> = await AxiosAdapter(
-      {
-        url: `${comicURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
-        method,
-      },
-      undefined,
-      false
+  try {
+    const res = await fetch(
+      `${env.API_URL}${comicURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
     );
-    // console.log("RES: ", res);
-    return res;
+
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch comic data: ${res.status} ${res.statusText}`
+      );
+    }
+
+    const data: IMarvelRes<IComicsInfo> = await res.json();
+    // console.log("Comic Data: ", data);
+    return data;
+  } catch (error) {
+    console.error("Fetch Error: ", error);
+    throw error;
   }
-);
+};
 
 interface Props {
   params: { comicId: number };
 }
 const ComicPage: NextPage<Props> = async ({ params }) => {
   const comicObj = await getComic(params.comicId);
-  const comic = comicObj.data.data.results;
+  // Handle case where comic data is not returned
+  if (!comicObj || !comicObj.data) {
+    return <p>There is no comic</p>;
+  }
 
-  return comic.length
-    ? comic.map((comicItem) => (
+  const charactersData = comicObj.data.results;
+
+  return charactersData && charactersData.length > 0
+    ? charactersData.map((comicItem) => (
         <Card
           key={comicItem.id}
           className="flex flex-col lg:flex-wrap lg:flex-row"

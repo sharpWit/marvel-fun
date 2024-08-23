@@ -1,27 +1,26 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import { IMarvelRes } from "@/types/response";
+import { IMarvelData, IMarvelRes } from "@/types/response";
 import { AspectRatio } from "../ui/AspectRatio";
 import { ICreatorsInfo } from "@/types/creators";
 import Pagination from "@/components/pagination/Pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 
 interface Props {
-  marvelCreators: IMarvelRes<ICreatorsInfo>;
+  marvelCreators: IMarvelData<ICreatorsInfo>;
 }
 
 const CreatorsCard: React.FC<Props> = ({ marvelCreators }) => {
+  const creators = marvelCreators.results;
   return (
     <>
       <h2 className="m-2 p-2 text-yellow-300 drop-shadow-lg text-xl md:text-2xl font-bold">
         Marvel Creators
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {marvelCreators && marvelCreators.data.data.count > 0 ? (
-          marvelCreators.data.data.results?.map((creator) => (
+        {creators && creators.length > 0 ? (
+          creators.map((creator) => (
             <Card key={creator.id} className="flex flex-col md:flex-row">
               <CardContent className="flex-1 p-4 w-full">
                 <AspectRatio ratio={1 / 1}>
@@ -54,7 +53,7 @@ const CreatorsCard: React.FC<Props> = ({ marvelCreators }) => {
           </div>
         )}
       </div>
-      <Pagination totalData={marvelCreators.data?.data?.total ?? 0} />
+      <Pagination totalData={marvelCreators.total ?? 0} />
     </>
   );
 };

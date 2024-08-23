@@ -7,29 +7,34 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/Card";
-import { IMarvelRes } from "@/types/response";
-import { ICharactersInfo } from "@/types/characters";
 import { Button } from "../ui/Button";
+import { IMarvelData } from "@/types/response";
 import { AspectRatio } from "../ui/AspectRatio";
+import { ICharactersInfo } from "@/types/characters";
 import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
-  marvelCharacters: IMarvelRes<ICharactersInfo>;
+  marvelCharacters: IMarvelData<ICharactersInfo>;
 }
 const CharactersCard: React.FC<Props> = ({ marvelCharacters }) => {
+  const characters = marvelCharacters.results;
+
   return (
     <>
       <h2 className="m-2 p-2 text-yellow-300 drop-shadow-lg text-xl md:text-2xl font-bold">
         Marvel Characters
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {marvelCharacters && marvelCharacters?.data?.data?.count > 0 ? (
-          marvelCharacters.data.data.results.map((character) => (
+        {characters && characters.length > 0 ? (
+          characters.map((character) => (
             <Card key={character.id} className="flex flex-col md:flex-row">
               <CardContent className="flex-1 p-4 w-full">
                 <AspectRatio ratio={1 / 1}>
                   <Image
-                    src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
+                    src={
+                      `${character.thumbnail.path}.${character.thumbnail.extension}` ||
+                      ""
+                    }
                     alt={character.name}
                     fill
                     priority
@@ -60,7 +65,7 @@ const CharactersCard: React.FC<Props> = ({ marvelCharacters }) => {
           </div>
         )}
       </div>
-      <Pagination totalData={marvelCharacters.data?.data?.total ?? 0} />
+      <Pagination totalData={marvelCharacters.total ?? 0} />
     </>
   );
 };
