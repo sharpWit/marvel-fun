@@ -1,39 +1,43 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Loading from "@/app/loading";
-import useDebounce from "@/hooks/useDebounce";
-import SearchResults from "./SearchResults";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 import { Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import env from "@/services/env";
+import Loading from "@/app/loading";
 import { Input } from "../form/Input";
 import { Button } from "../ui/Button";
-import { getAllChars } from "@/services/endpoints";
+import SearchResults from "./SearchResults";
+import { PAGE_SIZE } from "@/lib/constants";
 import { IMarvelRes } from "@/types/response";
+import useDebounce from "@/hooks/useDebounce";
+import { getAllChars } from "@/services/endpoints";
 import { ICharactersInfo } from "@/types/characters";
 import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
-import { PAGE_SIZE } from "@/lib/constants";
-import env from "@/services/env";
-import axios from "axios";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 
 const { url: charURL } = getAllChars();
 
-const getData = async (search: string) => {
+const getData = async (
+  search: string
+): Promise<IMarvelRes<ICharactersInfo>> => {
   try {
     const url = `${
       env.API_URL
     }${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${0}&limit=${PAGE_SIZE}&nameStartsWith=${search}`;
-    // console.log("Request URL: ", url); // Log the complete URL
-    const res = await axios.get<IMarvelRes<ICharactersInfo>>(url);
-    // console.log("RES-1: ", res);
-    if (res.status !== 200) {
-      throw new Error("Error");
+
+    const res = await fetch(url);
+    console.log("RES: ", res);
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch characters data list: ${res.status} ${res.statusText}`
+      );
     }
-    // console.log("RES-2: ", res);
-    return res.data;
+    const data: IMarvelRes<ICharactersInfo> = await res.json();
+    console.log("DATA: ", data);
+    return data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    throw error; // Re-throw the error to handle it in the calling function
+    throw error;
   }
 };
 
@@ -62,7 +66,7 @@ const SearchBar: React.FC = () => {
           setIsLoading(false);
         });
     } else {
-      setResultsData(null); // Clear results if the search term is empty
+      setResultsData(null);
     }
   }, [debouncedSearchTerm]);
 
@@ -84,8 +88,8 @@ const SearchBar: React.FC = () => {
     setModalRoot(!modalRoot);
   };
 
-  // console.log("debouncedSearchTerm: ", debouncedSearchTerm);
-  // console.log("DATA: ", resultsData);
+  console.log("debouncedSearchTerm: ", debouncedSearchTerm);
+  console.log("DATA: ", resultsData);
 
   return (
     <Dialog open={modalRoot} onOpenChange={setModalRoot}>
@@ -113,11 +117,11 @@ const SearchBar: React.FC = () => {
               (isLoading ? (
                 <Loading />
               ) : resultsData &&
-                resultsData.data.data.results && // Adjusted to access nested data
-                resultsData.data.data.results.length > 0 ? (
+                resultsData.data.results && // Adjusted to access nested data
+                resultsData.data.results.length > 0 ? (
                 <SearchResults
                   isLoading={isLoading}
-                  data={resultsData.data.data.results} // Adjusted to access nested data
+                  data={resultsData.data.results} // Adjusted to access nested data
                   onResultClick={handleResultClick}
                 />
               ) : (
