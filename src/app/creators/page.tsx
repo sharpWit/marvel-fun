@@ -26,7 +26,7 @@ const getCreatores = async (
     }
 
     const data: IMarvelRes<ICreatorsInfo> = await res.json();
-    // console.log("Creator Data: ", data);
+
     return data;
   } catch (error) {
     console.error("Fetch Error: ", error);

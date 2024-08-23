@@ -26,14 +26,12 @@ const getData = async (
     }${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${0}&limit=${PAGE_SIZE}&nameStartsWith=${search}`;
 
     const res = await fetch(url);
-    console.log("RES: ", res);
     if (!res.ok) {
       throw new Error(
         `Failed to fetch characters data list: ${res.status} ${res.statusText}`
       );
     }
     const data: IMarvelRes<ICharactersInfo> = await res.json();
-    console.log("DATA: ", data);
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -87,9 +85,6 @@ const SearchBar: React.FC = () => {
     setSearch("");
     setModalRoot(!modalRoot);
   };
-
-  console.log("debouncedSearchTerm: ", debouncedSearchTerm);
-  console.log("DATA: ", resultsData);
 
   return (
     <Dialog open={modalRoot} onOpenChange={setModalRoot}>

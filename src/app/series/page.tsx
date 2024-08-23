@@ -27,7 +27,7 @@ const getSeries = async (
     }
 
     const data: IMarvelRes<ISeriesInfo> = await res.json();
-    // console.log("Serie Data: ", data);
+
     return data;
   } catch (error) {
     console.error("Fetch Error: ", error);

@@ -38,7 +38,7 @@ const getCharacter = async (
     }
 
     const data: IMarvelRes<ICharactersInfo> = await res.json();
-    // console.log("Character Data: ", data);
+
     return data;
   } catch (error) {
     console.error("Fetch Error: ", error);

@@ -36,7 +36,7 @@ const getComic = async (params: number): Promise<IMarvelRes<IComicsInfo>> => {
     }
 
     const data: IMarvelRes<IComicsInfo> = await res.json();
-    // console.log("Comic Data: ", data);
+
     return data;
   } catch (error) {
     console.error("Fetch Error: ", error);

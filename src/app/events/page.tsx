@@ -26,7 +26,7 @@ const getEvents = async (
     }
 
     const data: IMarvelRes<IEventsInfo> = await res.json();
-    // console.log("event Data: ", data);
+
     return data;
   } catch (error) {
     console.error("Fetch Error: ", error);

@@ -36,7 +36,7 @@ const getEvent = async (params: number): Promise<IMarvelRes<IEventsInfo>> => {
     }
 
     const data: IMarvelRes<IEventsInfo> = await res.json();
-    // console.log("Event Data: ", data);
+
     return data;
   } catch (error) {
     console.error("Fetch Error: ", error);
