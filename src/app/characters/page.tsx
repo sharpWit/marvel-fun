@@ -1,50 +1,51 @@
-import { cache } from "react";
+import "server-only";
 import { NextPage } from "next";
+import env from "@/services/env";
 import { PAGE_SIZE } from "@/lib/constants";
 import { IMarvelRes } from "@/types/response";
-import { ICharactersInfo } from "@/types/characters";
 import { getAllChars } from "@/services/endpoints";
-import AxiosAdapter from "@/services/fetch-in-server";
+import { ICharactersInfo } from "@/types/characters";
 import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 import CharactersCard from "@/components/character-card/CharactersCard";
 
-const { url: charURL, method, data } = getAllChars();
+const { url: charURL } = getAllChars();
 
-const getCharacters = cache(
-  async (params?: number): Promise<IMarvelRes<ICharactersInfo>> => {
-    // const startTime = performance.now();
-    const offset =
-      (typeof params !== "number" || isNaN(params) ? 0 : params) * PAGE_SIZE;
+const getCharacters = async (
+  params: number = 0
+): Promise<IMarvelRes<ICharactersInfo>> => {
+  const offset = isNaN(params) ? 0 : (params - 1) * PAGE_SIZE;
 
-    const res: IMarvelRes<ICharactersInfo> = await AxiosAdapter(
-      {
-        url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
-        method,
-        data,
-      },
-      undefined,
-      false
+  try {
+    const res = await fetch(
+      `${env.API_URL}${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
     );
-    // const endTime = performance.now();
-    // console.log("Data fetched in", endTime - startTime, "ms");
-    // console.log("RES: ", res);
 
-    return res;
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch characters data list: ${res.status} ${res.statusText}`
+      );
+    }
+
+    const data: IMarvelRes<ICharactersInfo> = await res.json();
+
+    return data;
+  } catch (error) {
+    console.error("Fetch Error: ", error);
+    throw error;
   }
-);
+};
 
 interface Props {
-  searchParams: any;
+  searchParams: {
+    page: string;
+  };
 }
 
-const CharactesrPage: NextPage<Props> = async ({ searchParams }) => {
+const CharactersPage: NextPage<Props> = async ({ searchParams }) => {
   const { page } = searchParams ?? {};
   const characters = await getCharacters(Number(page));
 
-  // console.log("getAllChars: ", { url: charURL, method, data });
-  // console.log("page-main: ", page);
-  // console.log("characters: ", characters);
-
-  return <CharactersCard marvelCharacters={characters} />;
+  return <CharactersCard marvelCharacters={characters.data} />;
 };
-export default CharactesrPage;
+
+export default CharactersPage;

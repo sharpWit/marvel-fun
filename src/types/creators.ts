@@ -6,7 +6,7 @@ interface ICreatorUrl {
 interface ICreatorItem {
   resourceURI: string;
   name: string;
-  type?: string; // Add the type property if applicable
+  type?: string;
 }
 
 export interface ICreatorsInfo {

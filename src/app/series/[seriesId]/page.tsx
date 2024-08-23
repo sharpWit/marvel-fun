@@ -1,4 +1,3 @@
-import { cache } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NextPage } from "next";
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import env from "@/services/env";
 import { modifyUrl } from "@/lib/utils";
 import { PAGE_SIZE } from "@/lib/constants";
 import { ISeriesInfo } from "@/types/series";
@@ -16,27 +16,33 @@ import { IMarvelRes } from "@/types/response";
 import { Badge } from "@/components/ui/Badge";
 import { getSerieByID } from "@/services/endpoints";
 import { Separator } from "@/components/ui/Separator";
-import AxiosAdapter from "@/services/fetch-in-server";
 import { AspectRatio } from "@/components/ui/AspectRatio";
 import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 
-const getSerie = cache(
-  async (params: number): Promise<IMarvelRes<ISeriesInfo>> => {
-    const { url: serieURL, method } = getSerieByID(params);
-    const offset = params ?? 0 * PAGE_SIZE;
+// Fetch serie data
+const getSerie = async (params: number): Promise<IMarvelRes<ISeriesInfo>> => {
+  const offset = (params ?? 0) * PAGE_SIZE;
+  const { url: serieURL } = getSerieByID(params);
 
-    const res: IMarvelRes<ISeriesInfo> = await AxiosAdapter(
-      {
-        url: `${serieURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
-        method,
-      },
-      undefined,
-      false
+  try {
+    const res = await fetch(
+      `${env.API_URL}${serieURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
     );
-    // console.log("RES: ", res);
-    return res;
+
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch serie data: ${res.status} ${res.statusText}`
+      );
+    }
+
+    const data: IMarvelRes<ISeriesInfo> = await res.json();
+
+    return data;
+  } catch (error) {
+    console.error("Fetch Error: ", error);
+    throw error;
   }
-);
+};
 
 interface Props {
   params: { seriesId: number };
@@ -44,10 +50,15 @@ interface Props {
 
 const SeriePage: NextPage<Props> = async ({ params }) => {
   const serieObj = await getSerie(params.seriesId);
-  const serie = serieObj.data.data.results;
+  // Handle case where serie data is not returned
+  if (!serieObj || !serieObj.data) {
+    return <p>There is no serie</p>;
+  }
 
-  return serie.length
-    ? serie.map((serieItem) => (
+  const serieData = serieObj.data.results;
+
+  return serieData && serieData.length > 0
+    ? serieData.map((serieItem) => (
         <Card
           key={serieItem.id}
           className="flex flex-col lg:flex-wrap lg:flex-row"

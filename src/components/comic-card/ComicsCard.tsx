@@ -9,23 +9,24 @@ import {
 } from "../ui/Card";
 import { Button } from "../ui/Button";
 import { IComicsInfo } from "@/types/comics";
-import { IMarvelRes } from "@/types/response";
+import { IMarvelData } from "@/types/response";
 import { AspectRatio } from "../ui/AspectRatio";
 import Pagination from "@/components/pagination/Pagination";
 
 interface Props {
-  marvelComics: IMarvelRes<IComicsInfo>;
+  marvelComics: IMarvelData<IComicsInfo>;
 }
 
 const ComicsCard: React.FC<Props> = ({ marvelComics }) => {
+  const comics = marvelComics.results;
   return (
     <>
       <h2 className="m-2 p-2 text-yellow-300 drop-shadow-lg text-xl md:text-2xl font-bold">
         Marvel Comics
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {marvelComics && marvelComics?.data?.data?.count > 0 ? (
-          marvelComics.data.data.results?.map((comic) => (
+        {comics && comics.length > 0 ? (
+          comics.map((comic) => (
             <Card key={comic.id} className="flex flex-col md:flex-row">
               <CardContent className="flex-1 p-4 w-full">
                 <AspectRatio ratio={1 / 1}>
@@ -61,7 +62,7 @@ const ComicsCard: React.FC<Props> = ({ marvelComics }) => {
           </div>
         )}
       </div>
-      <Pagination totalData={marvelComics.data.data.total ?? 0} />
+      <Pagination totalData={marvelComics.total ?? 0} />
     </>
   );
 };

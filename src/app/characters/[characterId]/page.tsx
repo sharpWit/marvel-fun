@@ -8,35 +8,43 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import env from "@/services/env";
 import { modifyUrl } from "@/lib/utils";
+import { PAGE_SIZE } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
 import { IMarvelRes } from "@/types/response";
 import { ICharactersInfo } from "@/types/characters";
 import { Separator } from "@/components/ui/Separator";
 import { AspectRatio } from "@/components/ui/AspectRatio";
 import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
-import { getCharecterByID } from "@/services/endpoints";
-import { cache } from "react";
-import AxiosAdapter from "@/services/fetch-in-server";
-import { PAGE_SIZE } from "@/lib/constants";
+import { getCharacterByID } from "@/services/endpoints";
 
-const getCharacter = cache(
-  async (params: number): Promise<IMarvelRes<ICharactersInfo>> => {
-    const { url: charURL, method } = getCharecterByID(params);
-    const offset = params ?? 0 * PAGE_SIZE; // Calculate the offset based on the page number and page size
+// Fetch character data
+const getCharacter = async (
+  params: number
+): Promise<IMarvelRes<ICharactersInfo>> => {
+  const offset = (params ?? 0) * PAGE_SIZE;
+  const { url: charURL } = getCharacterByID(params);
 
-    const res: IMarvelRes<ICharactersInfo> = await AxiosAdapter(
-      {
-        url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
-        method,
-      },
-      undefined,
-      false
+  try {
+    const res = await fetch(
+      `${env.API_URL}${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
     );
-    // console.log("RES: ", res);
-    return res;
+
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch character data: ${res.status} ${res.statusText}`
+      );
+    }
+
+    const data: IMarvelRes<ICharactersInfo> = await res.json();
+
+    return data;
+  } catch (error) {
+    console.error("Fetch Error: ", error);
+    throw error;
   }
-);
+};
 
 interface Props {
   params: { characterId: number };
@@ -44,13 +52,15 @@ interface Props {
 
 const CharacterPage: NextPage<Props> = async ({ params }) => {
   const characterObj = await getCharacter(params.characterId);
-  const character = characterObj.data.data.results;
+  // Handle case where character data is not returned
+  if (!characterObj || !characterObj.data) {
+    return <p>There is no character</p>;
+  }
 
-  // console.log("characterObj: ", characterObj);
-  // console.log("character: ", character);
+  const charactersData = characterObj.data.results;
 
-  return character.length
-    ? character.map((char) => (
+  return charactersData && charactersData.length > 0
+    ? charactersData.map((char) => (
         <Card key={char.id} className="flex flex-col lg:flex-wrap lg:flex-row">
           <CardHeader className="flex-1 ">
             <CardTitle>{char.name}</CardTitle>

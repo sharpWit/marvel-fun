@@ -1,4 +1,3 @@
-import { cache } from "react";
 import Image from "next/image";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import env from "@/services/env";
 import { modifyUrl } from "@/lib/utils";
 import { PAGE_SIZE } from "@/lib/constants";
 import { IMarvelRes } from "@/types/response";
@@ -16,27 +16,33 @@ import { IEventsInfo } from "@/types/events";
 import { Badge } from "@/components/ui/Badge";
 import { getEventByID } from "@/services/endpoints";
 import { Separator } from "@/components/ui/Separator";
-import AxiosAdapter from "@/services/fetch-in-server";
 import { AspectRatio } from "@/components/ui/AspectRatio";
 import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
 
-const getEvent = cache(
-  async (params: number): Promise<IMarvelRes<IEventsInfo>> => {
-    const { url: charURL, method } = getEventByID(params);
-    const offset = params ?? 0 * PAGE_SIZE; // Calculate the offset based on the page number and page size
+// Fetch event data
+const getEvent = async (params: number): Promise<IMarvelRes<IEventsInfo>> => {
+  const offset = (params ?? 0) * PAGE_SIZE;
+  const { url: eventURL } = getEventByID(params);
 
-    const res: IMarvelRes<IEventsInfo> = await AxiosAdapter(
-      {
-        url: `${charURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`,
-        method,
-      },
-      undefined,
-      false
+  try {
+    const res = await fetch(
+      `${env.API_URL}${eventURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
     );
-    // console.log("RES: ", res);
-    return res;
+
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch event data: ${res.status} ${res.statusText}`
+      );
+    }
+
+    const data: IMarvelRes<IEventsInfo> = await res.json();
+
+    return data;
+  } catch (error) {
+    console.error("Fetch Error: ", error);
+    throw error;
   }
-);
+};
 
 interface Props {
   params: { eventId: number };
@@ -44,10 +50,15 @@ interface Props {
 
 const EventPage: NextPage<Props> = async ({ params }) => {
   const eventObj = await getEvent(params.eventId);
-  const event = eventObj.data.data.results;
+  // Handle case where event data is not returned
+  if (!eventObj || !eventObj.data) {
+    return <p>There is no event</p>;
+  }
 
-  return event.length
-    ? event.map((eventItem) => (
+  const eventsData = eventObj.data.results;
+
+  return eventsData && eventsData.length > 0
+    ? eventsData.map((eventItem) => (
         <Card
           key={eventItem.id}
           className="flex flex-col lg:flex-wrap lg:flex-row"
