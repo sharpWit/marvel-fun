@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import QueryProviders from "@/providers/QueryClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,18 +21,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-red-600 `}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Header />
-          <main className="container pt-4 lg:pt-32 min-h-screen">
-            {children}
-          </main>
-          <Footer />
-        </ThemeProvider>
+        <QueryProviders>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            <main className="container pt-4 lg:pt-32 min-h-screen">
+              {children}
+            </main>
+            <Footer />
+          </ThemeProvider>
+        </QueryProviders>
       </body>
     </html>
   );
