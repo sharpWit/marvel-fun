@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -8,16 +11,16 @@ import {
   CardTitle,
 } from "../ui/Card";
 import { Button } from "../ui/Button";
-import { IMarvelData } from "@/types/response";
 import { AspectRatio } from "../ui/AspectRatio";
-import { ICharactersInfo } from "@/types/characters";
+import { getCharacters } from "@/services/characters";
 import Pagination from "@/components/pagination/Pagination";
 
-interface Props {
-  marvelCharacters: IMarvelData<ICharactersInfo>;
-}
-const CharactersCard: React.FC<Props> = ({ marvelCharacters }) => {
-  const characters = marvelCharacters.results;
+const CharactersCard = () => {
+  const { data: characters } = useQuery({
+    queryKey: ["characters"],
+    queryFn: () => getCharacters(),
+  });
+  const charactersResults = characters?.data.results;
 
   return (
     <>
@@ -25,8 +28,8 @@ const CharactersCard: React.FC<Props> = ({ marvelCharacters }) => {
         Marvel Characters
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {characters && characters.length > 0 ? (
-          characters.map((character) => (
+        {characters && characters?.data.total > 0 ? (
+          charactersResults?.map((character) => (
             <Card key={character.id} className="flex flex-col md:flex-row">
               <CardContent className="flex-1 p-4 w-full">
                 <AspectRatio ratio={1 / 1}>
@@ -65,7 +68,7 @@ const CharactersCard: React.FC<Props> = ({ marvelCharacters }) => {
           </div>
         )}
       </div>
-      <Pagination totalData={marvelCharacters.total ?? 0} />
+      <Pagination totalData={characters?.data.total ?? 0} />
     </>
   );
 };

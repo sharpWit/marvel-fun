@@ -1,49 +1,45 @@
 import { NextPage } from "next";
-import env from "@/services/env";
-import { PAGE_SIZE } from "@/lib/constants";
 import { IMarvelRes } from "@/types/response";
 import { ICreatorsInfo } from "@/types/creators";
-import { getAllCreators } from "@/services/endpoints";
-import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
-import CreatorsCard from "@/components/creator-card/CreatorsCard";
-
-const { url: creatorURL } = getAllCreators();
-
-const getCreatores = async (
-  params: number = 0
-): Promise<IMarvelRes<ICreatorsInfo>> => {
-  const offset = isNaN(params) ? 0 : (params - 1) * PAGE_SIZE;
-
-  try {
-    const res = await fetch(
-      `${env.API_URL}${creatorURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
-    );
-
-    if (!res.ok) {
-      throw new Error(
-        `Failed to fetch creators data list: ${res.status} ${res.statusText}`
-      );
-    }
-
-    const data: IMarvelRes<ICreatorsInfo> = await res.json();
-
-    return data;
-  } catch (error) {
-    console.error("Fetch Error: ", error);
-    throw error;
-  }
-};
+import { getCreatores } from "@/services/creators";
+import CharactersCard from "@/components/character-card/CharactersCard";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import NotFound from "../not-found";
 
 interface Props {
   searchParams: {
-    page: string;
+    page?: string | string[] | undefined;
   };
 }
 
 const CreatorsPage: NextPage<Props> = async ({ searchParams }) => {
-  const { page } = searchParams ?? {};
-  const creators = await getCreatores(Number(page));
+  const queryClient = new QueryClient();
+  // Handle `searchParams` safely, checking types
+  const page = Array.isArray(searchParams?.page)
+    ? searchParams?.page[0]
+    : searchParams?.page;
 
-  return <CreatorsCard marvelCreators={creators.data} />;
+  const pageNum = page ? parseInt(page, 10) : 1;
+
+  // If pageNum isn't valid, render the NotFound component
+  if (isNaN(pageNum) || pageNum < 1) {
+    return <NotFound />;
+  }
+
+  await queryClient.prefetchQuery({
+    queryKey: ["creators"],
+    queryFn: (): Promise<IMarvelRes<ICreatorsInfo>> => getCreatores(pageNum),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CharactersCard />
+    </HydrationBoundary>
+  );
 };
+
 export default CreatorsPage;

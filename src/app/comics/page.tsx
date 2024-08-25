@@ -1,48 +1,45 @@
-import "server-only";
 import { NextPage } from "next";
-import env from "@/services/env";
-import { PAGE_SIZE } from "@/lib/constants";
 import { IComicsInfo } from "@/types/comics";
 import { IMarvelRes } from "@/types/response";
-import { getAllComics } from "@/services/endpoints";
-import ComicsCard from "@/components/comic-card/ComicsCard";
-import { apiKeyParam, hashParam, tsParam } from "@/lib/urlParams";
-
-const { url: comicURL } = getAllComics();
-
-const getComics = async (params: number): Promise<IMarvelRes<IComicsInfo>> => {
-  const offset = isNaN(params) ? 0 : (params - 1) * PAGE_SIZE;
-
-  try {
-    const res = await fetch(
-      `${env.API_URL}${comicURL}?${apiKeyParam}&${tsParam}&${hashParam}&offset=${offset}&limit=${PAGE_SIZE}`
-    );
-
-    if (!res.ok) {
-      throw new Error(
-        `Failed to fetch comics data list: ${res.status} ${res.statusText}`
-      );
-    }
-
-    const data: IMarvelRes<IComicsInfo> = await res.json();
-
-    return data;
-  } catch (error) {
-    console.error("Fetch Error: ", error);
-    throw error;
-  }
-};
+import { getComics } from "@/services/comics";
+import CharactersCard from "@/components/character-card/CharactersCard";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import NotFound from "../not-found";
 
 interface Props {
   searchParams: {
-    page: string;
+    page?: string | string[] | undefined;
   };
 }
 
 const ComicsPage: NextPage<Props> = async ({ searchParams }) => {
-  const { page } = searchParams ?? {};
-  const comics = await getComics(Number(page));
+  const queryClient = new QueryClient();
+  // Handle `searchParams` safely, checking types
+  const page = Array.isArray(searchParams?.page)
+    ? searchParams?.page[0]
+    : searchParams?.page;
 
-  return <ComicsCard marvelComics={comics.data} />;
+  const pageNum = page ? parseInt(page, 10) : 1;
+
+  // If pageNum isn't valid, render the NotFound component
+  if (isNaN(pageNum) || pageNum < 1) {
+    return <NotFound />;
+  }
+
+  await queryClient.prefetchQuery({
+    queryKey: ["comics"],
+    queryFn: (): Promise<IMarvelRes<IComicsInfo>> => getComics(pageNum),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CharactersCard />
+    </HydrationBoundary>
+  );
 };
+
 export default ComicsPage;
